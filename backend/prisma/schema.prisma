@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   // ADMIN, SALES, WAREHOUSE, ACCOUNTS
+  createdAt DateTime @default(now())
+}
+
+model Customer {
+  id           Int            @id @default(autoincrement())
+  name         String
+  mobile       String
+  email        String
+  businessName String
+  gstNumber    String?
+  customerType String         // Retail, Wholesale, Distributor
+  address      String
+  status       String         // Lead, Active, Inactive
+  followUpDate String?
+  notes        String?
+  notesList    CustomerNote[]
+  challans     SalesChallan[]
+  createdAt    DateTime       @default(now())
+}
+
+model CustomerNote {
+  id         Int      @id @default(autoincrement())
+  customerId Int
+  customer   Customer @relation(fields: [customerId], references: [id])
+  note       String
+  createdBy  String
+  createdAt  DateTime @default(now())
+}
+
+model Product {
+  id            Int                @id @default(autoincrement())
+  name          String
+  sku           String             @unique
+  category      String
+  unitPrice     Float
+  currentStock  Int
+  minStockAlert Int
+  location      String
+  movementLogs  StockMovementLog[]
+  createdAt     DateTime           @default(now())
+}
+
+model StockMovementLog {
+  id              Int      @id @default(autoincrement())
+  productId       Int
+  product         Product  @relation(fields: [productId], references: [id])
+  quantityChanged Int
+  movementType    String   // IN, OUT
+  reason          String
+  createdBy       String
+  createdAt       DateTime @default(now())
+}
+
+model SalesChallan {
+  id            Int                @id @default(autoincrement())
+  challanNumber String             @unique
+  customerId    Int
+  customer      Customer           @relation(fields: [customerId], references: [id])
+  totalQuantity Int
+  status        String             // Draft, Confirmed, Cancelled
+  createdBy     String
+  createdAt     DateTime           @default(now())
+  items         SalesChallanItem[]
+}
+
+model SalesChallanItem {
+  id                  Int          @id @default(autoincrement())
+  challanId           Int
+  challan             SalesChallan @relation(fields: [challanId], references: [id])
+  productId           Int
+  productNameSnapshot String
+  skuSnapshot         String
+  unitPriceSnapshot   Float
+  quantity            Int
+}
