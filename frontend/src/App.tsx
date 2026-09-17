@@ -29,7 +29,7 @@ export default function App() {
       const res = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: loginEmail, password: 'password123' })
+        body: JSON.stringify({ email: loginEmail, password })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
