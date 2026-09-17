@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react';
 const API_BASE = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api`;
 
 export default function App() {
-  const [token, setToken] = useState(localStorage.getItem('token') || '');
-  const [user, setUser] = useState<any>(JSON.parse(localStorage.getItem('user') || 'null'));
+  const [token, setToken] = useState('');
+  const [user, setUser] = useState<any>(null);
   const [tab, setTab] = useState<'customers' | 'products' | 'challans'>('challans');
 
   // Auth State
